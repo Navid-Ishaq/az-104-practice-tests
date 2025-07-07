@@ -1,83 +1,74 @@
-### 📦 Question Title: Can a Locked Resource Group Block a Resource Move?
+### 🔐 Question Title: Can Resources Be Moved with Resource Group Locks?
 
 **Question:**
-David works at **CloudBridge Systems**, a global company with teams in different regions.  
-He has deployed a storage account called `hrdata-store` inside a resource group named `rg-dev-1`.  
-Now, he wants to move this storage account into another group, `rg-prod-3`, which has a **Delete lock** applied.  
 
-What will happen if David tries to move the resource?
+Sarah is a cloud administrator at **AzureNest Technologies**. She deployed a storage account named `azstore100` in the resource group `rg-infra-west`, which currently **has no lock** applied. She now wants to move this storage account to another resource group called `rg-secure-east`, which **has a Delete lock** applied.
 
-- **A.** The move will succeed because a Delete lock only blocks deletion, not movement  
-- **B.** The move will fail because the destination group is locked  
-- **C.** The move will succeed but the lock will be removed during transfer  
-- **D.** The move will fail because resources can't move across regions  
+Can Sarah complete the move successfully?
 
----
-
-**✅ Correct Answer: B**
+**A.** Yes, because the destination lock doesn’t block resource movement  
+**B.** No, because Delete locks block incoming resources  
+**C.** No, because the source must also have a Delete lock  
+**D.** Yes, because resource movement isn’t affected by any lock
 
 ---
 
-### 💡 Explanation:
+**✅ Correct Answer: A**
 
-In Azure, **locks are designed to protect resource groups from changes**. A **Delete lock** doesn't just stop deletion — it also **prevents adding or moving resources into the group**.  
+---
 
-In David’s case, `rg-prod-3` has a Delete lock, so Azure will **block the move** of `hrdata-store` to protect that group from accidental changes.  
+**🧠 Explanation:**
 
-To complete the move, David would need to temporarily remove the lock, move the resource, and then reapply the lock after the move.
+In this case, Sarah **can move the storage account** from `rg-infra-west` (no lock) into `rg-secure-east` (Delete lock) because **Delete locks only prevent deletion**, not the addition of new resources.
+
+- A **Delete lock** protects the destination group from accidental deletion but **does not stop adding** resources to it.
+- If the **source group had a lock**, like **Read-only**, the move would have failed.
+- Since only the **destination group** has a lock and it's a **Delete lock**, the move is **allowed**.
+
+Locks are helpful for protection but do **not block every type of action**. Always check **lock type and placement** before moving Azure resources.
 
 ---
 ---
 ---
-### 📦 Question Title: Moving a Resource into a Locked Group — Can It Work?
+### 🔐 Question Title: Can You Move Azure Resources with Locks Applied?
 
----
+**Scenario:**
 
-**Background Scenario:**
+Sarah, a cloud engineer at **AzureNest Technologies**, wants to reorganize some Azure resources. She has a storage account named `azstore100` currently placed in a resource group with no lock. She wants to move it to another resource group that has a **Delete lock** applied.
 
-Emily is a cloud engineer at **AzureNest Technologies**.  
-Her company has two Azure subscriptions: `DevOps` and `Production`.
+Here’s the setup:
 
-Here are the **resource groups** in each subscription:
-
-#### DevOps Subscription
-
-| Name         | Region       | Lock Type |
-|--------------|--------------|-----------|
-| rg-dev-1     | West Europe  | None      |
-| rg-dev-2     | West Europe  | Read-only |
-
-#### Production Subscription
-
-| Name         | Region    | Lock Type |
-|--------------|-----------|-----------|
-| rg-prod-3    | East Asia | Delete    |
-| rg-prod-4    | Central US| None      |
-
-Emily has deployed a storage account called **`wzstorage`** in the `rg-dev-1` group.  
-Now, she wants to move it to the `rg-prod-3` group in the `Production` subscription.
-
----
+| Resource Group Name | Region       | Lock Type  |
+|---------------------|--------------|------------|
+| `rg-infra-west`     | West Europe  | None       |
+| `rg-secure-east`    | East US      | Delete     |
 
 **Question:**  
-Can Emily move `wzstorage` to the `rg-prod-3` resource group?
+Can Sarah move the storage account `azstore100` from `rg-infra-west` to `rg-secure-east`?
 
-- **A.** Yes, because locks only affect deletions, not moves  
-- **B.** Yes, as long as both resource groups are in Azure  
-- **C.** No, because the target group has a **Delete lock**  
-- **D.** No, because the resource is in a different subscription  
-
----
-
-**✅ Correct Answer: C**
+**A.** Yes, because a Delete lock on the destination group does not block the move  
+**B.** No, because Delete locks stop incoming resources  
+**C.** No, because the source group must also have a lock  
+**D.** Yes, because locks don’t affect moves at all
 
 ---
 
-### 💡 Explanation:
+**✅ Correct Answer: A**
 
-Although a **Delete lock** sounds like it only blocks deletion, in Azure it also prevents **moving** resources **into** the locked group. This is to protect production workloads from unexpected changes.  
+---
 
-Emily would first need to **remove the Delete lock** from `rg-prod-3`, then move the storage account, and finally reapply the lock to keep protections in place.
+**🧠 Explanation:**
 
-This ensures that production environments stay stable unless an intentional update is made.
+In Azure, a **Delete lock** only prevents resources in the group from being **deleted**. It does **not stop new resources** from being **added** or **moved into** that group.
+
+Since:
+- The **source group** (`rg-infra-west`) has **no lock**, and  
+- The **destination group** (`rg-secure-east`) has a **Delete lock**,  
+
+👉 Sarah **can successfully move** the resource to the new group.
+
+⚠️ **Important Note:**  
+If the **source** group had a **Read-only** or **Delete** lock, the move would have **failed**. Lock behavior always depends on what action you're performing and **where the lock is applied**.
+
+
 
