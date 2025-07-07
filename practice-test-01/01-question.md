@@ -1,9 +1,3 @@
-### 1️⃣ Step-by-step walkthrough in a live Azure environment
-
-🟩 **Task:** Rewriting the given scenario using fictional characters and organizations with consistent naming conventions.
-
----
-
 ### 🔐 Question Title: Implementing Identity-Based File Access for Remote Teams in Azure
 
 **Question:**  
