@@ -30,26 +30,37 @@ Locks are helpful for protection but do **not block every type of action**. Alwa
 ---
 ---
 ---
-### 🔐 Question Title: Can You Move Azure Resources with Locks Applied?
+### 🔐 Question Title: Can You Move a Storage Account Between Locked Resource Groups?
 
 **Scenario:**
 
-Sarah, a cloud engineer at **AzureNest Technologies**, wants to reorganize some Azure resources. She has a storage account named `azstore100` currently placed in a resource group with no lock. She wants to move it to another resource group that has a **Delete lock** applied.
+At **SkyNetCore Ltd.**, a multinational IT firm, engineer **David** is managing Azure resources across two environments: **DevOps** and **Production**. He wants to move a storage account `skyblob001` from one resource group to another for better organization.
 
-Here’s the setup:
+Below are the current resource group configurations in each subscription:
+
+#### DevOps Subscription
 
 | Resource Group Name | Region       | Lock Type  |
 |---------------------|--------------|------------|
-| `rg-infra-west`     | West Europe  | None       |
-| `rg-secure-east`    | East US      | Delete     |
+| rg-devops-1         | West Europe  | None       |
+| rg-devops-2         | West Europe  | Read-only  |
+
+David has deployed the storage account `skyblob001` into the `rg-devops-1` group.
+
+#### Production Subscription
+
+| Resource Group Name | Region     | Lock Type  |
+|---------------------|------------|------------|
+| rg-prod-3           | East Asia  | Delete     |
+| rg-prod-4           | Central US | None       |
 
 **Question:**  
-Can Sarah move the storage account `azstore100` from `rg-infra-west` to `rg-secure-east`?
+Can David move the `skyblob001` storage account to the `rg-prod-3` resource group?
 
-**A.** Yes, because a Delete lock on the destination group does not block the move  
-**B.** No, because Delete locks stop incoming resources  
-**C.** No, because the source group must also have a lock  
-**D.** Yes, because locks don’t affect moves at all
+**A.** Yes, because Delete locks only prevent deletion, not moves  
+**B.** No, because Delete locks block all resource actions  
+**C.** No, because the source group is in a different region  
+**D.** Yes, but only if the source group also has a Delete lock
 
 ---
 
@@ -59,16 +70,12 @@ Can Sarah move the storage account `azstore100` from `rg-infra-west` to `rg-secu
 
 **🧠 Explanation:**
 
-In Azure, a **Delete lock** only prevents resources in the group from being **deleted**. It does **not stop new resources** from being **added** or **moved into** that group.
+Azure’s **Delete lock** stops resources from being **deleted**, but it does **not block moving resources into** that group. The key things to remember:
 
-Since:
-- The **source group** (`rg-infra-west`) has **no lock**, and  
-- The **destination group** (`rg-secure-east`) has a **Delete lock**,  
+- The **source group** (`rg-devops-1`) has **no lock**, so resources can be moved out of it.
+- The **destination group** (`rg-prod-3`) has a **Delete lock**, which only prevents deletions — not additions or moves.
 
-👉 Sarah **can successfully move** the resource to the new group.
+David can **safely move** the `skyblob001` storage account into the locked `rg-prod-3` group without any problem.
 
-⚠️ **Important Note:**  
-If the **source** group had a **Read-only** or **Delete** lock, the move would have **failed**. Lock behavior always depends on what action you're performing and **where the lock is applied**.
-
-
+However, if the **source group had a lock** (like Read-only or Delete), that would have **blocked** the move.
 
