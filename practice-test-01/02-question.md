@@ -26,3 +26,46 @@ So when Emily tries to move `team-hub-app` into `rg-devops-2`, the action will *
 To allow the move, the lock must first be **removed** or **disabled** temporarily. Once the move is done, the lock can be re-applied if needed for protection.
 
 This helps prevent accidental changes in sensitive environments, like production or compliance groups.
+
+---
+---
+---
+
+### 📋 Question Title: Resource Group Locks and App Movement in Azure
+
+**Scenario:**  
+SkyNetCore Technologies has two Azure subscriptions — “DevLab” and “ProductionLab.”  
+Here are the resource groups in each:
+
+| Subscription    | Resource Group     | Region       | Lock Type   |
+|----------------|--------------------|--------------|-------------|
+| DevLab         | rg-devops-1        | North Europe | None        |
+| DevLab         | rg-devops-2        | North Europe | Read Only   |
+| ProductionLab  | rg-prod-1          | East US      | Delete      |
+| ProductionLab  | rg-prod-2          | Central US   | None        |
+
+Emily, a cloud admin at SkyNetCore, deployed an app named `team-hub-app` in the `rg-devops-1` group. She now wants to move it to `rg-devops-2`.
+
+**Question:**  
+Can Emily move the app into `rg-devops-2` successfully?
+
+- **A.** Yes, the app will move, and the lock will apply afterward  
+- **B.** No, the move will fail because of the Read Only lock  
+- **C.** Yes, but the app will become locked and unusable  
+- **D.** No, because they are in different subscriptions  
+
+---
+
+**✅ Correct Answer: B**
+
+---
+
+### 💡 Explanation:
+
+Emily cannot move the app into `rg-devops-2` because a **Read Only lock** prevents **any changes** to that resource group — and **moving a resource in** is considered a change.  
+
+The correct approach would be to **remove or disable the lock**, perform the move, and **reapply the lock** afterward for safety.
+
+Note: All groups are in the **same subscription and region**, so that’s not the issue here.
+
+
